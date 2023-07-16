@@ -6,9 +6,32 @@ import uuid
 
 class Client:
 
-  def __init__(self, cookie, organization_id):
+  def __init__(self, cookie):
     self.cookie = cookie
-    self.organization_id = organization_id
+    self.organization_id = self.get_organization_id()
+
+  def get_organization_id(self):
+    url = "https://claude.ai/api/organizations"
+  
+    headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
+      'Accept': '*/*',
+      'Accept-Language': 'en-US,en;q=0.5',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Referer': 'https://claude.ai/chats',
+      'Content-Type': 'application/json',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'same-origin',
+      'Connection': 'keep-alive',
+      'Cookie': f'{self.cookie}'
+    }
+  
+    response = requests.request("GET", url, headers=headers)
+    res = json.loads(response.text)
+    uuid = res[0]['uuid']
+  
+    return uuid
 
   # Lists all the conversations you had with Claude
   def list_all_conversations(self):
@@ -36,7 +59,7 @@ class Client:
     else:
       print(f"Error: {response.status_code} - {response.text}")
 
-  # Send Message to Claude 
+  # Send Message to Claude
   def send_message(self, prompt, conversation_id):
     url = "https://claude.ai/api/append_message"
 
@@ -78,7 +101,7 @@ class Client:
     # Returns answer
     return answer
 
-  # Deletes the conversation 
+  # Deletes the conversation
   def delete_conversation(self, conversation_id):
     url = f"https://claude.ai/api/organizations/{self.organization_id}/chat_conversations/{conversation_id}"
 
@@ -209,4 +232,3 @@ class Client:
       return True
     else:
       return False
-
