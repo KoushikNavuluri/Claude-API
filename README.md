@@ -36,14 +36,18 @@ Import the claude_api module in your Python script:
 
     from claude_ai import Client
 
-Next, you need to create an instance of the Client class by providing your Claude AI cookie:
-You can get cookie from the browser's developer tools network tab ( see for any claude.ai requests check out cookie ,copy whole value ) or storage tab ( You can find cookie of claude.ai ,there will be four values )(Checkout below image for the format of cookie ,It is Better to Use from network tab to grab cookie easily )
+* Next, you need to create an instance of the Client class by providing your Claude AI cookie:
 
-![Screenshot (8)](https://github.com/KoushikNavuluri/Claude-API/assets/103725723/f6cfabe1-b01f-482f-a226-ede7e8c6bcb8)
+* You can get cookie from the browser's developer tools network tab ( see for any claude.ai requests check out cookie ,copy whole value ) or storage tab ( You can find cookie of claude.ai ,there will be four values )
 
-    cookie = os.environ.get('cookie')
+* (Checkout below image for the format of cookie ,It is Better to Use from network tab to grab cookie easily )
+
+   ![Screenshot (8)](https://github.com/KoushikNavuluri/Claude-API/assets/103725723/355971e3-f46c-47fc-a3cf-008bb55bb4c6)
+
+
+        cookie = os.environ.get('cookie')
     
-    claude_api = Client(cookie)
+        claude_api = Client(cookie)
 
 ## List All Conversations
 
