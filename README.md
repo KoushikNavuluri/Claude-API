@@ -1,6 +1,15 @@
 # Claude AI-API ( Unofficial )
 This project provides an unofficial API for Claude AI, allowing users to access and interact with Claude AI .
 
+## Use Cases 
+
+    1. Python Console ChatBot
+
+    2. Discord Chatbot   
+    
+    3. Many more can be done....
+    
+
 ## Prerequisites
 
 To use this API, you need to have the following:
