@@ -29,9 +29,8 @@ Import the claude_api module in your Python script:
 Next, you need to create an instance of the Client class by providing your Claude AI cookie and organization ID:
 
     cookie = os.environ.get('cookie')
-    organization_id = os.environ.get('organization_id')
     
-    claude_api = Client(cookie, organization_id)
+    claude_api = Client(cookie)
 
 ## List All Conversations
 
