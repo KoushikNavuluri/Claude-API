@@ -25,9 +25,9 @@ setup(
         'Operating System :: Microsoft :: Windows',
     ],
     package_dir={
-    "": "claude-api/src"
+    "": "claude_api/src"
     },
-    keywords=['claude', 'ai', 'claude-ai', 'API', 'requests', 'chatbot'],,
+    keywords=['claude', 'ai', 'claude-ai', 'API', 'requests', 'chatbot'],
     install_requires=[
         'requests'  
     ],
