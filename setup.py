@@ -1,8 +1,12 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+base_path = Path(__file__).parent
+long_description = (base_path / "README.md").read_text()
+
 
 setup(
     name='claude-api', 
-    version='1.0.0',  
+    version='1.0.1',  
     author='Koushik',
     author_email='navulurikoushik@outlook.com',
     description='An unofficial API for Claude AI, allowing users to access and interact with Claude AII',
@@ -20,6 +24,9 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
     ],
+    package_dir={
+    "": "claude-api/src"
+    },
     keywords=['claude', 'ai', 'claude-ai', 'API', 'requests', 'chatbot'],,
     install_requires=[
         'requests'  
