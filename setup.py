@@ -6,7 +6,7 @@ long_description = (base_path / "README.md").read_text()
 
 setup(
     name='claude-api', 
-    version='1.0.1',  
+    version='1.0.4',  
     author='Koushik',
     license="MIT"
     author_email='koushikk@outlook.com',
@@ -28,6 +28,7 @@ setup(
     package_dir={
     "": "claude-api"
     },
+    py_modules=["claude_api"],
     keywords=['claude', 'ai', 'claude-ai', 'API', 'requests', 'chatbot'],
     install_requires=[
         'requests'  
