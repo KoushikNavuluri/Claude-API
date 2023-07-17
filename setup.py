@@ -10,7 +10,7 @@ setup(
     author='Koushik',
     author_email='navulurikoushik@outlook.com',
     description='An unofficial API for Claude AI, allowing users to access and interact with Claude AII',
-    long_description='This project provides an unofficial API for Claude AI, allowing users to access and interact with Claude A',
+    long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/KoushikNavuluri/Claude-API/', 
     packages=find_packages(),
@@ -25,7 +25,7 @@ setup(
         'Operating System :: Microsoft :: Windows',
     ],
     package_dir={
-    "": "claude_api/src"
+    "": "claude-api"
     },
     keywords=['claude', 'ai', 'claude-ai', 'API', 'requests', 'chatbot'],
     install_requires=[
