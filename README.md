@@ -3,7 +3,7 @@ This project provides an unofficial API for Claude AI, allowing users to access 
 
 ## Use Cases 
 
-    1. Python Console ChatBot
+    1. Python Console ChatBot ( Check in usecases folder for sample console chatbot )
 
     2. Discord Chatbot   
     
