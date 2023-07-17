@@ -34,7 +34,7 @@ Clone the repository:
 
 Import the claude_api module in your Python script:
 
-    from claude_ai import Client
+    from claude_api import Client
 
 * Next, you need to create an instance of the Client class by providing your Claude AI cookie:
 
