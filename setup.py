@@ -8,7 +8,7 @@ setup(
     name='claude-api', 
     version='1.0.4',  
     author='Koushik',
-    license="MIT"
+    license="MIT",
     author_email='koushikk@outlook.com',
     description='An unofficial API for Claude AI, allowing users to access and interact with Claude AII',
     long_description=long_description,
