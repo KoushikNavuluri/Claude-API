@@ -25,6 +25,11 @@ requests library installed
 
 To use the Claude AI Unofficial API, you can either clone the GitHub repository or directly download the Python file.
 
+Terminal :
+
+    pip install claude-api
+
+
 Clone the repository:
 
     git clone https://github.com/KoushikNavuluri/Claude-API.git
