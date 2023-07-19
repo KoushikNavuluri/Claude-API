@@ -28,7 +28,8 @@ To use the Claude AI Unofficial API, you can either clone the GitHub repository 
 Terminal :
 
     pip install claude-api
-
+    
+or
 
 Clone the repository:
 
