@@ -91,8 +91,8 @@ class Client:
     }
 
     response = requests.post(url, headers=headers, data=payload, stream=True)
-
-    data = response.text.strip().split('\n')[-1]
+    decoded_data = response.content.decode("utf-8")
+    data = decoded_data.strip().split('\n')[-1]
 
     answer = {"answer": json.loads(data[6:])['completion']}['answer']
 
