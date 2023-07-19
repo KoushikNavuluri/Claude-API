@@ -17,7 +17,6 @@ class Client:
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
       'Accept': '*/*',
       'Accept-Language': 'en-US,en;q=0.5',
-      'Accept-Encoding': 'gzip, deflate, br',
       'Referer': 'https://claude.ai/chats',
       'Content-Type': 'application/json',
       'Sec-Fetch-Dest': 'empty',
@@ -110,7 +109,6 @@ class Client:
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
       'Accept': '*/*',
       'Accept-Language': 'en-US,en;q=0.5',
-      'Accept-Encoding': 'gzip, deflate, br',
       'Content-Type': 'application/json',
       'Content-Length': '38',
       'Referer': 'https://claude.ai/chats',
@@ -171,7 +169,6 @@ class Client:
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
       'Accept': '*/*',
       'Accept-Language': 'en-US,en;q=0.5',
-      'Accept-Encoding': 'gzip, deflate, br',
       'Referer': 'https://claude.ai/chats',
       'Content-Type': 'application/json',
       'Origin': 'https://claude.ai',
@@ -211,9 +208,7 @@ class Client:
     headers = {
       'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
-      'Accept': '*/*',
       'Accept-Language': 'en-US,en;q=0.5',
-      'Accept-Encoding': 'gzip, deflate, br',
       'Content-Type': 'application/json',
       'Referer': 'https://claude.ai/chats',
       'Origin': 'https://claude.ai',
