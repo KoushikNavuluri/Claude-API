@@ -2,7 +2,7 @@
 This project provides an unofficial API for Claude AI, allowing users to access and interact with Claude AI .
 
 ## Table of contents
-[Claude AI-API ( Unofficial )](#claude-ai-api---unofficial--)
+
   * [Use Cases](#use-cases)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
