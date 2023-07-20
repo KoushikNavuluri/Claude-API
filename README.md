@@ -71,7 +71,7 @@ To send a message to Claude, you can use the send_message method. You need to pr
 
 
     prompt = "Hello, Claude!"
-    conversation_id = "<conversation_id>"
+    conversation_id = "<conversation_id>" or client.create_new_chat()['uuid']
     response = claude_api.send_message(prompt, conversation_id)
     print(response)
 
