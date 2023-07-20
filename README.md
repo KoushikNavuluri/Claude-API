@@ -1,6 +1,22 @@
 # Claude AI-API ( Unofficial )
 This project provides an unofficial API for Claude AI, allowing users to access and interact with Claude AI .
 
+## Table of contents
+[Claude AI-API ( Unofficial )](#claude-ai-api---unofficial--)
+  * [Use Cases](#use-cases)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [List All Conversations](#list-all-conversations)
+  * [Send Message](#send-message)
+  * [Delete Conversation](#delete-conversation)
+  * [Chat Conversation History](#chat-conversation-history)
+  * [Create New Chat](#create-new-chat)
+  * [Reset All Conversations](#reset-all-conversations)
+  * [Rename Chat](#rename-chat)
+  * [Disclaimer](#disclaimer)
+
+
 ## Use Cases 
 
     1. Python Console ChatBot ( Check in usecases folder for sample console chatbot )
