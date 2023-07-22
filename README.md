@@ -9,6 +9,7 @@ This project provides an unofficial API for Claude AI, allowing users to access 
   * [Usage](#usage)
   * [List All Conversations](#list-all-conversations)
   * [Send Message](#send-message)
+  * [Send Message with attachment](#send-message-with-attachment)
   * [Delete Conversation](#delete-conversation)
   * [Chat Conversation History](#chat-conversation-history)
   * [Create New Chat](#create-new-chat)
@@ -67,9 +68,8 @@ Import the claude_api module in your Python script:
    ![Screenshot (8)](https://github.com/KoushikNavuluri/Claude-API/assets/103725723/355971e3-f46c-47fc-a3cf-008bb55bb4c6)
 
 
-        cookie = os.environ.get('cookie')
-    
-        claude_api = Client(cookie)
+      cookie = os.environ.get('cookie')
+      claude_api = Client(cookie)
 
 ## List All Conversations
 
@@ -90,6 +90,17 @@ To send a message to Claude, you can use the send_message method. You need to pr
     conversation_id = "<conversation_id>" or client.create_new_chat()['uuid']
     response = claude_api.send_message(prompt, conversation_id)
     print(response)
+
+## Send Message with attachment
+
+You can send any type of attachment to claude to get responses using attachment argument in send_message().
+Note: Claude currently supports only some file types.
+
+    prompt = "Hey,Summarize me this document.!"
+    conversation_id = "<conversation_id>" or client.create_new_chat()['uuid']
+    response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf")
+    print(response)
+
 
 ## Delete Conversation
 
