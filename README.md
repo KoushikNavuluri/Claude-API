@@ -1,6 +1,8 @@
 # Claude AI-API ( Unofficial )
 This project provides an unofficial API for Claude AI, allowing users to access and interact with Claude AI .
 
+#### Current Version == 1.0.9
+
 ## Table of contents
 
   * [Use Cases](#use-cases)
