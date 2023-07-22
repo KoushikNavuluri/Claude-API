@@ -87,7 +87,7 @@ To send a message to Claude, you can use the send_message method. You need to pr
 
 
     prompt = "Hello, Claude!"
-    conversation_id = "<conversation_id>" or client.create_new_chat()['uuid']
+    conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
     response = claude_api.send_message(prompt, conversation_id)
     print(response)
 
@@ -97,7 +97,7 @@ You can send any type of attachment to claude to get responses using attachment 
 Note: Claude currently supports only some file types.
 
     prompt = "Hey,Summarize me this document.!"
-    conversation_id = "<conversation_id>" or client.create_new_chat()['uuid']
+    conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
     response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf")
     print(response)
 
