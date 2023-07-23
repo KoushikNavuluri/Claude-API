@@ -80,7 +80,7 @@ class Client:
     if attachment:
       attachment_response = self.upload_attachment(attachment)
       if attachment_response:
-        attachments = attachment_response
+        attachments = [attachment_response]
       else:
         return {"Error: Invalid file format. Please try again."}
 
