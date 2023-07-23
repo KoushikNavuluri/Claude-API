@@ -76,16 +76,13 @@ class Client:
     url = "https://claude.ai/api/append_message"
 
     # Upload attachment if provided
-    attachments = []
     if attachment:
       attachment_response = self.upload_attachment(attachment)
       if attachment_response:
-        attachments = attachment_response
+        attachments = [attachment_response]
       else:
         return {"Error: Invalid file format. Please try again."}
-
-    # Ensure attachments is an empty list when no attachment is provided
-    if not attachment:
+    else:
       attachments = []
 
     payload = json.dumps({
