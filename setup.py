@@ -6,7 +6,7 @@ long_description = (base_path / "README.md").read_text()
 
 setup(
     name='claude-api', 
-    version='1.0.11',  
+    version='1.0.12',  
     author='Koushik',
     license="MIT",
     author_email='koushikk@outlook.com',
