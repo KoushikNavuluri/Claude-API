@@ -49,7 +49,7 @@ class Client:
       uuid = res[0]['uuid']
       return uuid
     else:
-        raise ValueError(str(response))
+      raise ValueError(str(response))
 
   def get_content_type(self, file_path):
     # Function to determine content type based on file extension
