@@ -6,9 +6,27 @@ import uuid
 
 class Client:
 
-  def __init__(self, cookie):
-    self.cookie = cookie
+  def __init__(self, cookie, proxy=None):
+    self.cookies = self.parse_cookies(cookie)
+    if not self.validate_cookies():
+      raise ValueError("Invalid cookies")
+    self.proxy = proxy
     self.organization_id = self.get_organization_id()
+
+  @staticmethod
+  def parse_cookies(cookie_string):
+    cookies = {}
+    for cookie in cookie_string.split("; "):
+      if "=" in cookie:
+        key, value = cookie.split("=", 1)  # split only once
+        cookies[key] = value
+    return cookies
+
+  def validate_cookies(self):
+    if 'sessionKey' in self.cookies:
+      return True
+    raise ValueError('Cookies not valid.')
+    return False
 
   def get_organization_id(self):
     url = "https://claude.ai/api/organizations"
@@ -22,15 +40,16 @@ class Client:
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
-        'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}'
+        'Connection': 'keep-alive'
     }
 
-    response = requests.request("GET", url, headers=headers)
-    res = json.loads(response.text)
-    uuid = res[0]['uuid']
-
-    return uuid
+    response = requests.request("GET", url, headers=headers, cookies=self.cookies, proxies=self.proxy)
+    if response.status_code==200:
+      res = json.loads(response.text)
+      uuid = res[0]['uuid']
+      return uuid
+    else:
+        raise ValueError(str(response))
 
   def get_content_type(self, file_path):
     # Function to determine content type based on file extension
@@ -58,11 +77,10 @@ class Client:
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
-        'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}'
+        'Connection': 'keep-alive'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, cookies=self.cookies, proxies=self.proxy)
     conversations = response.json()
 
     # Returns all conversation information in a list
@@ -110,14 +128,13 @@ class Client:
       'Origin': 'https://claude.ai',
       'DNT': '1',
       'Connection': 'keep-alive',
-      'Cookie': f'{self.cookie}',
       'Sec-Fetch-Dest': 'empty',
       'Sec-Fetch-Mode': 'cors',
       'Sec-Fetch-Site': 'same-origin',
       'TE': 'trailers'
     }
 
-    response = requests.post(url, headers=headers, data=payload, stream=True)
+    response = requests.post(url, headers=headers, data=payload, stream=True, cookies=self.cookies, proxies=self.proxy)
     decoded_data = response.content.decode("utf-8")
     data = decoded_data.strip().split('\n')[-1]
 
@@ -143,11 +160,10 @@ class Client:
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
         'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}',
         'TE': 'trailers'
     }
 
-    response = requests.request("DELETE", url, headers=headers, data=payload)
+    response = requests.request("DELETE", url, headers=headers, data=payload, cookies=self.cookies, proxies=self.proxy)
 
     # Returns True if deleted or False if any error in deleting
     if response.status_code == 204:
@@ -168,11 +184,10 @@ class Client:
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
-        'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}'
+        'Connection': 'keep-alive'
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, cookies=self.cookies, proxies=self.proxyy)
     print(type(response))
 
     # List all the conversations in JSON
@@ -198,14 +213,13 @@ class Client:
         'Origin': 'https://claude.ai',
         'DNT': '1',
         'Connection': 'keep-alive',
-        'Cookie': self.cookie,
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, cookies=self.cookies, proxies=self.proxy)
 
     # Returns JSON of the newly created conversation information
     return response.json()
@@ -232,7 +246,6 @@ class Client:
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
         'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}',
         'TE': 'trailers'
     }
 
@@ -244,7 +257,7 @@ class Client:
         'orgUuid': (None, self.organization_id)
     }
 
-    response = requests.post(url, headers=headers, files=files)
+    response = requests.post(url, headers=headers, files=files, cookies=self.cookies, proxies=self.proxy)
     if response.status_code == 200:
       return response.json()
     else:
@@ -272,14 +285,12 @@ class Client:
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
         'Connection': 'keep-alive',
-        'Cookie': f'{self.cookie}',
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, cookies=self.cookies, proxies=self.proxy)
 
     if response.status_code == 200:
       return True
     else:
       return False
-      
