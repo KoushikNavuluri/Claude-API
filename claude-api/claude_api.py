@@ -6,9 +6,13 @@ import uuid
 
 class Client:
 
-  def __init__(self, cookie):
+  def __init__(self, cookie, proxies=None):
     self.cookie = cookie
+    self.proxies = proxies
     self.organization_id = self.get_organization_id()
+
+  def set_proxies(self, proxies):
+    self.proxies = proxies
 
   def get_organization_id(self):
     url = "https://claude.ai/api/organizations"
@@ -26,7 +30,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, proxies=self.proxies)
     res = json.loads(response.text)
     uuid = res[0]['uuid']
 
@@ -62,7 +66,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, proxies=self.proxies)
     conversations = response.json()
 
     # Returns all conversation information in a list
@@ -117,7 +121,7 @@ class Client:
       'TE': 'trailers'
     }
 
-    response = requests.post(url, headers=headers, data=payload, stream=True)
+    response = requests.post(url, headers=headers, data=payload, stream=True, proxies=self.proxies)
     decoded_data = response.content.decode("utf-8")
     data = decoded_data.strip().split('\n')[-1]
 
@@ -147,7 +151,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("DELETE", url, headers=headers, data=payload)
+    response = requests.request("DELETE", url, headers=headers, data=payload, proxies=self.proxies)
 
     # Returns True if deleted or False if any error in deleting
     if response.status_code == 204:
@@ -172,7 +176,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, proxies=self.proxies)
     print(type(response))
 
     # List all the conversations in JSON
@@ -205,7 +209,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, proxies=self.proxies)
 
     # Returns JSON of the newly created conversation information
     return response.json()
@@ -244,14 +248,14 @@ class Client:
         'orgUuid': (None, self.organization_id)
     }
 
-    response = requests.post(url, headers=headers, files=files)
+    response = requests.post(url, headers=headers, files=files, proxies=self.proxies)
     if response.status_code == 200:
       return response.json()
     else:
       return False
-      
 
-    
+
+
   # Renames the chat conversation title
   def rename_chat(self, title, conversation_id):
     url = "https://claude.ai/api/rename_chat"
@@ -276,10 +280,10 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, proxies=self.proxies)
 
     if response.status_code == 200:
       return True
     else:
       return False
-      
+
