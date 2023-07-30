@@ -221,6 +221,19 @@ class Client:
     return True
 
   def upload_attachment(self, file_path):
+    if file_path.endswith('.txt'):
+      file_name = os.path.basename(file_path)
+      file_size = os.path.getsize(file_path)
+      file_type = "text/plain"
+      with open(file_path, 'r', encoding='utf-8') as file:
+        file_content = file.read()
+
+      return {
+          "file_name": file_name,
+          "file_type": file_type,
+          "file_size": file_size,
+          "extracted_content": file_content
+      }
     url = 'https://claude.ai/api/convert_document'
     headers = {
         'User-Agent':
