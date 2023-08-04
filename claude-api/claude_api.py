@@ -72,21 +72,29 @@ class Client:
       print(f"Error: {response.status_code} - {response.text}")
 
   # Send Message to Claude
-  def send_message(self, prompt, conversation_id, attachment=None):
+  def send_message(self, prompt, conversation_id, attachment=None, attachments=[]):
     url = "https://claude.ai/api/append_message"
 
     # Upload attachment if provided
-    attachments = []
+    attachments_for_request = []
     if attachment:
       attachment_response = self.upload_attachment(attachment)
       if attachment_response:
-        attachments = [attachment_response]
+        attachments_for_request = [attachment_response]
       else:
         return {"Error: Invalid file format. Please try again."}
 
+    if attachments:
+      for attachment in attachments:
+        attachment_response = self.upload_attachment(attachment)
+        if attachment_response:
+          attachments_for_request.append(attachment_response)
+        else:
+          return {"Error: Invalid file format. Please try again."}
+
     # Ensure attachments is an empty list when no attachment is provided
-    if not attachment:
-      attachments = []
+    if attachment is None and attachments is None:
+      attachments_for_request = []
 
     payload = json.dumps({
       "completion": {
@@ -97,7 +105,7 @@ class Client:
       "organization_uuid": f"{self.organization_id}",
       "conversation_uuid": f"{conversation_id}",
       "text": f"{prompt}",
-      "attachments": attachments
+      "attachments": attachments_for_request
     })
 
     headers = {
