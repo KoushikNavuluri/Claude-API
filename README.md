@@ -97,14 +97,15 @@ To send a message to Claude, you can use the send_message method. You need to pr
     response = claude_api.send_message(prompt, conversation_id)
     print(response)
 
-## Send Message with attachment
+## Send Message with Attachments
 
-You can send any type of attachment to claude to get responses using attachment argument in send_message().
-Note: Claude currently supports only some file types.
+You can send multiple attachments (up to 5) to Claude to get responses using the `attachments` argument in `send_message()`. 
+Note: Make sure to provide a list of file paths even if you're sending just one file. Claude currently supports only certain file types.
 
-    prompt = "Hey,Summarize me this document.!"
+    prompt = "Hey, summarize the documents for me!"
     conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
-    response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf")
+    file_paths = ["path/to/file1.pdf", "path/to/file2.txt"]  # you can include up to 5 file paths in this list
+    response = claude_api.send_message(prompt, conversation_id, attachments=file_paths)
     print(response)
 
 
