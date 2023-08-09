@@ -1,8 +1,9 @@
-import requests
-import json
-import os
-import uuid
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
+import requests, json, uuid
+import os
+from datetime import datetime
 
 class Client:
 
@@ -72,7 +73,7 @@ class Client:
             print(f"Error: {response.status_code} - {response.text}")
 
     # Send Message to Claude
-    def send_message(self, prompt, conversation_id, attachment=None, stream=False):
+    def send_message(self, prompt, conversation_id, attachment=None):
         url = "https://claude.ai/api/append_message"
 
         # Upload attachment if provided
@@ -83,6 +84,8 @@ class Client:
                 attachments = [attachment_response]
             else:
                 return {"Error: Invalid file format. Please try again."}
+        else:
+            attachment_response = None
 
         # Ensure attachments is an empty list when no attachment is provided
         if not attachment:
@@ -117,22 +120,62 @@ class Client:
             'TE': 'trailers'
         }
 
-        if stream:
-            response = self._stream_message(url=url, payload=payload, headers=headers)
-            return response
-        else:
+        response = requests.post(url, headers=headers, data=payload, stream=True)
+        decoded_data = response.content.decode("utf-8")
+        data_strings = decoded_data.strip().split('\n')
+        data_strings = [item for item in data_strings if item != '']
+        completions = []
+        for data_string in data_strings:
+            json_str = data_string[6:].strip()
+            data = json.loads(json_str)
+            if 'completion' in data:
+                completions.append(data['completion'])
 
-          response = requests.post(url, headers=headers,
-                                  data=payload, stream=True)
-          decoded_data = response.content.decode("utf-8")
-          data = decoded_data.strip().split('\n')[-1]
+        answer = ''.join(completions)
 
-          answer = {"answer": json.loads(data[6:])['completion']}['answer']
+        # Returns answer
+        return answer
 
-          # Returns answer
-          return answer
+    def stream_message(self, prompt, conversation_id):
 
-    def _stream_message(self, url, payload, headers):
+        # for i in range(10):
+        #     yield b'some fake data\n'
+        #     time.sleep(0.5)
+        # return
+
+        url = "https://claude.ai/api/append_message"
+
+        payload = json.dumps({
+            "completion": {
+                "prompt": f"{prompt}",
+                "timezone": "Europe/London",
+                "model": "claude-2"
+            },
+            "organization_uuid": f"{self.organization_id}",
+            "conversation_uuid": f"{conversation_id}",
+            "text": f"{prompt}",
+            "session_id": "",
+            "message": f"{prompt}",
+            "attachments": [],
+            "stream": True
+        })
+
+        headers = {
+            'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
+            'Accept': 'text/event-stream, text/event-stream',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Referer': 'https://claude.ai/chats',
+            'Content-Type': 'application/json',
+            'Origin': 'https://claude.ai',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Cookie': f'{self.cookie}',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'TE': 'trailers'
+        }
 
         newChunk = ""
         oldChunk = ""
@@ -164,27 +207,26 @@ class Client:
                                         decoded_line
                                     )
 
-                                    # Clean Response
+                                    ### Clean Response
                                     newChunk = completion
                                     # print(newChunk)
 
                                     if oldChunk in newChunk:
-                                        newChunk = newChunk.replace(
-                                            oldChunk, "", 1)
+                                        newChunk = newChunk.replace(oldChunk, "", 1)
                                     else:
                                         newChunk = oldChunk
 
                                     yield newChunk
                                     oldChunk = completion
-                                    # End Clean Response
+                                    ### End Clean Response
 
                                     # yield completion + '\n'
 
+
                                 else:
-                                    errortype = decoded_line.get("error")[
-                                        "type"]
+                                    errortype = decoded_line.get("error")["type"]
                                     if errortype == "rate_limit_error":
-                                        yield 'o_o: ' + decoded_line.get("error")["message"] + '\nGive me a few hours rest :))'
+                                        yield 'o_o: ' + decoded_line.get("error")["message"] + '\nGive me a few hours rest :)\nCame back at ' + str(datetime.fromtimestamp(decoded_line.get("error")["resets_at"])) + '\n'
                                         return
 
                         except json.JSONDecodeError as e:
@@ -294,19 +336,6 @@ class Client:
         return True
 
     def upload_attachment(self, file_path):
-        if file_path.endswith('.txt'):
-            file_name = os.path.basename(file_path)
-            file_size = os.path.getsize(file_path)
-            file_type = "text/plain"
-            with open(file_path, 'r', encoding='utf-8') as file:
-                file_content = file.read()
-
-            return {
-                "file_name": file_name,
-                "file_type": file_type,
-                "file_size": file_size,
-                "extracted_content": file_content
-            }
         url = 'https://claude.ai/api/convert_document'
         headers = {
             'User-Agent':

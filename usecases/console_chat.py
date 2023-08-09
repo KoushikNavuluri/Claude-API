@@ -1,21 +1,40 @@
 import os
 from claude_api import Client
 from fastapi.responses import StreamingResponse
+import browser_cookie3
 
 STREAM = True
 
-def get_cookie():
-    cookie = os.environ.get('cookie')
-    if not cookie:
-        raise ValueError("Please set the 'cookie' environment variable.")
-    return cookie
+def get_cookie() -> str:
+
+    domain = "claude"
+    sessionName = "sessionKey"
+
+    cookies = browser_cookie3.load(domain)
+
+    filtered_cookies = [
+        cookie for cookie in cookies if sessionName.lower() in cookie.name.lower()
+    ]
+
+    result = None
+    if filtered_cookies:
+        result = filtered_cookies[-1].value
+    
+    if result:
+        result = f"sessionKey={result}"
+        return result
+    else:
+        cookie = os.environ.get('cookie')
+        if not cookie:
+            raise ValueError("Please set the 'cookie' environment variable.")
+        return cookie
 
 def main():
     cookie = get_cookie()
     claude = Client(cookie)
     conversation_id = None
 
-    print("Welcome to Claude AI Chat!")
+    print(f"Welcome to Claude AI Chat! (Streaming={STREAM})")
 
     if STREAM:
         while True:
