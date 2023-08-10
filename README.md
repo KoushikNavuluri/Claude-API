@@ -5,7 +5,7 @@ This project provides an unofficial API for Claude AI, allowing users to access 
 
 
 
-#### Current Version == 1.0.13
+#### Current Version == 1.0.14
 
 ## Table of contents
 
