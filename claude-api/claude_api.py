@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import uuid
+import re
 
 
 class Client:
@@ -119,9 +120,16 @@ class Client:
 
     response = requests.post(url, headers=headers, data=payload, stream=True)
     decoded_data = response.content.decode("utf-8")
-    data = decoded_data.strip().split('\n')[-1]
+    decoded_data = re.sub('\n+', '\n', decoded_data).strip()
+    data_strings = decoded_data.split('\n')
+    completions = []
+    for data_string in data_strings:
+      json_str = data_string[6:].strip()
+      data = json.loads(json_str)
+      if 'completion' in data:
+        completions.append(data['completion'])
 
-    answer = {"answer": json.loads(data[6:])['completion']}['answer']
+    answer = ''.join(completions)
 
     # Returns answer
     return answer
