@@ -7,7 +7,15 @@ import re
 
 class Client:
 
-  def __init__(self, cookie):
+  def __init__(self, cookie, proxy = None):
+    # pip install PySocks for socks proxy support
+    # example
+    # proxy = {
+    # 'http': "socks5://127.0.0.1:9050",
+    # 'https': "socks5://127.0.0.1:9050",
+    # }
+
+    self.proxy = proxy
     self.cookie = cookie
     self.organization_id = self.get_organization_id()
 
@@ -27,7 +35,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, proxies=self.proxy)
     res = json.loads(response.text)
     uuid = res[0]['uuid']
 
@@ -63,7 +71,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, proxies=self.proxy)
     conversations = response.json()
 
     # Returns all conversation information in a list
@@ -118,7 +126,7 @@ class Client:
       'TE': 'trailers'
     }
 
-    response = requests.post(url, headers=headers, data=payload, stream=True)
+    response = requests.post(url, headers=headers, data=payload, stream=True, proxies=self.proxy)
     decoded_data = response.content.decode("utf-8")
     decoded_data = re.sub('\n+', '\n', decoded_data).strip()
     data_strings = decoded_data.split('\n')
@@ -155,7 +163,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("DELETE", url, headers=headers, data=payload)
+    response = requests.request("DELETE", url, headers=headers, data=payload, proxies=self.proxy)
 
     # Returns True if deleted or False if any error in deleting
     if response.status_code == 204:
@@ -180,7 +188,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, proxies=self.proxy)
     print(type(response))
 
     # List all the conversations in JSON
@@ -213,7 +221,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, proxies=self.proxy)
 
     # Returns JSON of the newly created conversation information
     return response.json()
@@ -265,7 +273,7 @@ class Client:
         'orgUuid': (None, self.organization_id)
     }
 
-    response = requests.post(url, headers=headers, files=files)
+    response = requests.post(url, headers=headers, files=files, proxies=self.proxy)
     if response.status_code == 200:
       return response.json()
     else:
@@ -297,7 +305,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.request("POST", url, headers=headers, data=payload)
+    response = requests.request("POST", url, headers=headers, data=payload, proxies=self.proxy)
 
     if response.status_code == 200:
       return True
