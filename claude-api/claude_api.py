@@ -15,6 +15,8 @@ class Client:
     # 'https': "socks5://127.0.0.1:9050",
     # }
 
+    if not cookie.startswith('sessionKey='):
+      cookie = 'sessionKey=' + cookie
     self.proxy = proxy
     self.cookie = cookie
     self.organization_id = self.get_organization_id()
