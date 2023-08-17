@@ -1,8 +1,10 @@
 import json
 import os
-import uuid
-from curl_cffi import requests
 import re
+import uuid
+
+import requests as req
+from curl_cffi import requests
 
 
 class Client:
@@ -265,7 +267,7 @@ class Client:
         'orgUuid': (None, self.organization_id)
     }
 
-    response = requests.post(url, headers=headers, files=files,impersonate="chrome110")
+    response = req.post(url, headers=headers, files=files)
     if response.status_code == 200:
       return response.json()
     else:
