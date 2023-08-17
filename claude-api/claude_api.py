@@ -118,7 +118,7 @@ class Client:
       'TE': 'trailers'
     }
 
-    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110", timeout=300)
     decoded_data = response.content.decode("utf-8")
     decoded_data = re.sub('\n+', '\n', decoded_data).strip()
     data_strings = decoded_data.split('\n')
