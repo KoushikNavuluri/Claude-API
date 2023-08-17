@@ -74,7 +74,7 @@ class Client:
       print(f"Error: {response.status_code} - {response.text}")
 
   # Send Message to Claude
-  def send_message(self, prompt, conversation_id, attachment=None):
+  def send_message(self, prompt, conversation_id, attachment=None,timeout=500):
     url = "https://claude.ai/api/append_message"
 
     # Upload attachment if provided
@@ -119,7 +119,7 @@ class Client:
       'TE': 'trailers'
     }
 
-    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=500)
     decoded_data = response.content.decode("utf-8")
     decoded_data = re.sub('\n+', '\n', decoded_data).strip()
     data_strings = decoded_data.split('\n')
