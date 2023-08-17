@@ -5,7 +5,7 @@ This project provides an unofficial API for Claude AI, allowing users to access 
 
 
 
-#### Current Version == 1.0.16
+#### Current Version == 1.0.17 ( Added Timeouts,Faster Requests,File handling Fixed.. )
 
 ## Table of contents
 
@@ -102,9 +102,11 @@ To send a message to Claude, you can use the send_message method. You need to pr
 You can send any type of attachment to claude to get responses using attachment argument in send_message().
 Note: Claude currently supports only some file types.
 
+{ You can also add timeout if you need ,using timeout parameter[default set to 500] }
+
     prompt = "Hey,Summarize me this document.!"
     conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
-    response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf")
+    response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf",timeout=600)
     print(response)
 
 
