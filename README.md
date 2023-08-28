@@ -109,6 +109,15 @@ Note: Claude currently supports only some file types.
     response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf",timeout=600)
     print(response)
 
+## Retry Message
+
+To regenerate a message from Claude, you can use the retry_message method. You need to provide the the conversation ID:
+
+
+
+    conversation_id = "<conversation_id>"
+    response = claude_api.retry_message(conversation_id)
+    print(response)
 
 ## Delete Conversation
 
