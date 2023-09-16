@@ -1,15 +1,21 @@
 import json
 import os
-import uuid
-from curl_cffi import requests
-import requests as req
 import re
+import uuid
+
+import requests as req
+from curl_cffi import requests
 
 
 class Client:
 
-  def __init__(self, cookie):
+  def __init__(self, cookie, proxies=None):
+    """
+    :param cookie: cookie for Claude.ai
+    :param proxies: proxies for requests, e.g. {"http": "http://localhost:3450", "https": "http://localhost:3450"}
+    """
     self.cookie = cookie
+    self.proxies = proxies
     self.organization_id = self.get_organization_id()
 
   def get_organization_id(self):
@@ -28,7 +34,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.get(url, headers=headers,impersonate="chrome110")
+    response = requests.get(url, headers=headers,impersonate="chrome110", proxies=self.proxies)
     res = json.loads(response.text)
     uuid = res[0]['uuid']
 
@@ -64,7 +70,7 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.get(url, headers=headers,impersonate="chrome110")
+    response = requests.get(url, headers=headers,impersonate="chrome110", proxies=self.proxies)
     conversations = response.json()
 
     # Returns all conversation information in a list
@@ -119,7 +125,7 @@ class Client:
       'TE': 'trailers'
     }
 
-    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=500)
+    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=500, proxies=self.proxies)
     decoded_data = response.content.decode("utf-8")
     decoded_data = re.sub('\n+', '\n', decoded_data).strip()
     data_strings = decoded_data.split('\n')
@@ -156,7 +162,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.delete( url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.delete( url, headers=headers, data=payload,impersonate="chrome110", proxies=self.proxies)
 
     # Returns True if deleted or False if any error in deleting
     if response.status_code == 204:
@@ -181,8 +187,8 @@ class Client:
         'Cookie': f'{self.cookie}'
     }
 
-    response = requests.get( url, headers=headers,impersonate="chrome110")
-    
+    response = requests.get( url, headers=headers,impersonate="chrome110", proxies=self.proxies)
+
 
     # List all the conversations in JSON
     return response.json()
@@ -214,7 +220,7 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110", proxies=self.proxies)
 
     # Returns JSON of the newly created conversation information
     return response.json()
@@ -271,9 +277,9 @@ class Client:
       return response.json()
     else:
       return False
-      
 
-    
+
+
   # Renames the chat conversation title
   def rename_chat(self, title, conversation_id):
     url = "https://claude.ai/api/rename_chat"
@@ -298,10 +304,10 @@ class Client:
         'TE': 'trailers'
     }
 
-    response = requests.post(url, headers=headers, data=payload,impersonate="chrome110")
+    response = requests.post(url, headers=headers, data=payload,impersonate="chrome110", proxies=self.proxies)
 
     if response.status_code == 200:
       return True
     else:
       return False
-      
+
