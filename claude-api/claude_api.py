@@ -4,6 +4,7 @@ import uuid
 from curl_cffi import requests
 import requests as req
 import re
+import typing
 
 
 class Client:
@@ -75,6 +76,21 @@ class Client:
 
   # Send Message to Claude
   def send_message(self, prompt, conversation_id, attachment=None,timeout=500):
+    return self._non_stream_query(
+      prompt=prompt,
+      conversation_id=conversation_id,
+      attachment=attachment,
+      timeout=timeout,
+    )
+  
+  def _query_stream(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+  ) -> typing.Generator[dict, None, None]:
+    
     url = "https://claude.ai/api/append_message"
 
     # Upload attachment if provided
@@ -118,22 +134,60 @@ class Client:
       'Sec-Fetch-Site': 'same-origin',
       'TE': 'trailers'
     }
-
-    response = requests.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=500)
-    decoded_data = response.content.decode("utf-8")
-    decoded_data = re.sub('\n+', '\n', decoded_data).strip()
-    data_strings = decoded_data.split('\n')
-    completions = []
-    for data_string in data_strings:
-      json_str = data_string[6:].strip()
-      data = json.loads(json_str)
-      if 'completion' in data:
-        completions.append(data['completion'])
-
-    answer = ''.join(completions)
-
-    # Returns answer
-    return answer
+    
+    with requests.Session() as s:
+      response = s.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=timeout, stream=True)
+      for line in response.iter_lines():
+        data_string = line.decode("utf-8")
+        if not data_string.startswith('data:'):
+          continue
+        json_str = data_string[6:].strip()
+        data = json.loads(json_str)
+        if 'completion' in data:
+          yield data['completion']
+          
+  def _non_stream_query(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+  ) -> str:
+    completion = ""
+    
+    for data in self._query_stream(
+      prompt=prompt,
+      conversation_id=conversation_id,
+      attachment=attachment,
+      timeout=timeout,
+    ):
+      completion += data
+      
+    return completion
+        
+  def query(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+    stream=False,
+  ) -> typing.Union[str, typing.Generator[str, None, None]]:
+    if not stream:
+      return self.send_message(
+        prompt=prompt,
+        conversation_id=conversation_id,
+        attachment=attachment,
+        timeout=timeout,
+      )
+    else:
+      return self._query_stream(
+        prompt=prompt,
+        conversation_id=conversation_id,
+        attachment=attachment,
+        timeout=timeout,
+      )
+      
 
   # Deletes the conversation
   def delete_conversation(self, conversation_id):
