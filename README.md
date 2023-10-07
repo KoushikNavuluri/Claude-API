@@ -86,29 +86,34 @@ To list all the conversation Id's you had with Claude , you can use the list_all
         conversation_id = conversation['uuid']
         print(conversation_id)
 
-## Send Message
+## Query
 
-To send a message to Claude, you can use the send_message method. You need to provide the prompt and the conversation ID:
-
-
+To query Claude, you can use the query method. You need to provide the prompt and the conversation ID:
 
     prompt = "Hello, Claude!"
     conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
-    response = claude_api.send_message(prompt, conversation_id)
+    response = claude_api.query(prompt, conversation_id)
     print(response)
 
-## Send Message with attachment
+Also supported stream mode:
 
-You can send any type of attachment to claude to get responses using attachment argument in send_message().
+    prompt = "Hello, Claude!"
+    conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
+    response = claude_api.query(prompt, conversation_id, stream=True)
+    for r in response:
+        print(r, end="")
+
+## Query with attachment
+
+You can send any type of attachment to claude to get responses using attachment argument in query().
 Note: Claude currently supports only some file types.
 
 { You can also add timeout if you need ,using timeout parameter[default set to 500] }
 
     prompt = "Hey,Summarize me this document.!"
     conversation_id = "<conversation_id>" or claude_api.create_new_chat()['uuid']
-    response = claude_api.send_message(prompt, conversation_id,attachment="path/to/file.pdf",timeout=600)
+    response = claude_api.query(prompt, conversation_id,attachment="path/to/file.pdf",timeout=600)
     print(response)
-
 
 ## Delete Conversation
 
