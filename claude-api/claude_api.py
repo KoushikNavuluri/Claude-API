@@ -4,6 +4,7 @@ import uuid
 from curl_cffi import requests
 import requests as req
 import re
+import typing
 
 
 class Client:
@@ -134,6 +135,112 @@ class Client:
 
     # Returns answer
     return answer
+  
+  def _query_stream(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+  ) -> typing.Generator[dict, None, None]:
+    
+    url = "https://claude.ai/api/append_message"
+
+    # Upload attachment if provided
+    attachments = []
+    if attachment:
+      attachment_response = self.upload_attachment(attachment)
+      if attachment_response:
+        attachments = [attachment_response]
+      else:
+        return {"Error: Invalid file format. Please try again."}
+
+    # Ensure attachments is an empty list when no attachment is provided
+    if not attachment:
+      attachments = []
+
+    payload = json.dumps({
+      "completion": {
+        "prompt": f"{prompt}",
+        "timezone": "Asia/Kolkata",
+        "model": "claude-2"
+      },
+      "organization_uuid": f"{self.organization_id}",
+      "conversation_uuid": f"{conversation_id}",
+      "text": f"{prompt}",
+      "attachments": attachments
+    })
+
+    headers = {
+      'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0',
+      'Accept': 'text/event-stream, text/event-stream',
+      'Accept-Language': 'en-US,en;q=0.5',
+      'Referer': 'https://claude.ai/chats',
+      'Content-Type': 'application/json',
+      'Origin': 'https://claude.ai',
+      'DNT': '1',
+      'Connection': 'keep-alive',
+      'Cookie': f'{self.cookie}',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'same-origin',
+      'TE': 'trailers'
+    }
+    
+    with requests.Session() as s:
+      response = s.post( url, headers=headers, data=payload,impersonate="chrome110",timeout=timeout, stream=True)
+      for line in response.iter_lines():
+        data_string = line.decode("utf-8")
+        if not data_string.startswith('data:'):
+          continue
+        json_str = data_string[6:].strip()
+        data = json.loads(json_str)
+        if 'completion' in data:
+          yield data['completion']
+          
+  def _non_stream_query(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+  ) -> str:
+    completion = ""
+    
+    for data in self._query_stream(
+      prompt=prompt,
+      conversation_id=conversation_id,
+      attachment=attachment,
+      timeout=timeout,
+    ):
+      completion += data
+      
+    return completion
+        
+  def query(
+    self,
+    prompt,
+    conversation_id,
+    attachment=None,
+    timeout=500,
+    stream=False,
+  ) -> typing.Union[str, typing.Generator[str, None, None]]:
+    if not stream:
+      return self.send_message(
+        prompt=prompt,
+        conversation_id=conversation_id,
+        attachment=attachment,
+        timeout=timeout,
+      )
+    else:
+      return self._query_stream(
+        prompt=prompt,
+        conversation_id=conversation_id,
+        attachment=attachment,
+        timeout=timeout,
+      )
+      
 
   # Deletes the conversation
   def delete_conversation(self, conversation_id):
