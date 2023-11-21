@@ -94,7 +94,7 @@ class Client:
       "completion": {
         "prompt": f"{prompt}",
         "timezone": "Asia/Kolkata",
-        "model": "claude-2"
+        "model": "claude-2.0-magenta"
       },
       "organization_uuid": f"{self.organization_id}",
       "conversation_uuid": f"{conversation_id}",
